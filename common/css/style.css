@@ -26,7 +26,7 @@ h1 { font-family: 'GMarketSans'; word-break: keep-all; }
 
 #game_area { padding: 20px; }
 .game_container { display: flex; gap: 20px; width: 100%; max-width: 800px; min-height: 400px; margin: 0 auto; }
-.column { flex: 1; display: flex; flex-direction: column; gap: 12px; font-family: 'NationalPension'; }
+.column { flex: 1; display: flex; flex-direction: column; gap: 12px; }
 .item { padding: 18px; background: #fff; border: 2px solid #e9ecef; border-radius: 12px; cursor: pointer; text-align: center; transition: all 0.2s ease; font-size: 16px; line-height: 20px; min-height: 40px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); user-select: none; }
 .item:hover { border-color: #dee2e6; background: #f1f3f5; }
 .item.selected { border-color: #4dabf7; background: #e7f5ff; transform: scale(1.02); }
