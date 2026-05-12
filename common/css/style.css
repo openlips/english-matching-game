@@ -1,7 +1,7 @@
 @import url(font.css);
 
 body { font-family: 'Pretendard', sans-serif; background-color: #f8f9fa; padding: 0; margin: 0; text-align: center; }
-h1 { font-family: 'GMarketSans'; }
+h1 { font-family: 'GMarketSans'; word-break: keep-all; }
 .main { padding: 20px; }
 .main h1 span { display: inline-block; }
 
@@ -13,7 +13,7 @@ h1 { font-family: 'GMarketSans'; }
 
 #mode_selection { height: 100vh; display: flex; justify-content: center; align-items: center; padding: 0 20px 150px; box-sizing: border-box; }
 #mode_selection .inner { text-align: center; max-width: 600px; width: 90%; background: #fff; padding: 50px 20px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-#mode_selection h1 { margin-bottom: 10px; color: #333; }
+#mode_selection h1 { margin-bottom: 10px; color: #333; line-height: 120%; }
 #mode_selection p { color: #666; margin-bottom: 30px; }
 
 .btn_game { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
@@ -21,11 +21,12 @@ h1 { font-family: 'GMarketSans'; }
 .btn_bot { display: flex; gap: 15px; justify-content: center; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #bbb; }
 .btn_bot a { text-decoration: none; color: #fff; font-size: 15px; background: #333; padding: 10px 20px; border-radius: 8px; font-weight: 700; }
 
-.info_bar { display: flex; gap: 20px; justify-content: space-between; font-weight: bold; background: #fff; padding: 10px 20px; border-radius: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); max-width: 800px; margin: 0 auto 20px; box-sizing: border-box; }
+.info_bar { display: flex; gap: 20px; justify-content: space-between; font-weight: bold; background: #fff; padding: 15px 20px; border-radius: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); max-width: 800px; margin: 0 auto 20px; box-sizing: border-box; }
+.info_bar span span { color: #4dabf7; }
 
 #game_area { padding: 20px; }
 .game_container { display: flex; gap: 20px; width: 100%; max-width: 800px; min-height: 400px; margin: 0 auto; }
-.column { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.column { flex: 1; display: flex; flex-direction: column; gap: 12px; font-family: 'NationalPension'; }
 .item { padding: 18px; background: #fff; border: 2px solid #e9ecef; border-radius: 12px; cursor: pointer; text-align: center; transition: all 0.2s ease; font-size: 16px; line-height: 20px; min-height: 40px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); user-select: none; }
 .item:hover { border-color: #dee2e6; background: #f1f3f5; }
 .item.selected { border-color: #4dabf7; background: #e7f5ff; transform: scale(1.02); }
@@ -37,3 +38,7 @@ h1 { font-family: 'GMarketSans'; }
 #result_overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); color: #fff; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
 .btn_restart { margin-top: 20px; padding: 12px 30px; background: #4dabf7; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; }
 .btn_restart:hover { background-color: #339af0; }
+@media screen and (max-width:768px) {
+.main h1 span { display: block; }
+.btn_game .btn_mode { font-size: 15px; }
+}
