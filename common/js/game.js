@@ -13,8 +13,8 @@ let selectedKr = null;
 let selectedEn = null;
 
 const itemsPerPage = 5;     // 페이지당 문장 수 (고정)
-const sndCorrect = new Audio('../audio/correct2.mp3');
-const sndWrong = new Audio('../audio/wrong.mp3');
+const sndCorrect = new Audio('../common/audio/correct.mp3');
+const sndWrong = new Audio('../common/audio/wrong.mp3');
 
 function playSound(type) {
     const snd = type === 'correct' ? sndCorrect : sndWrong;

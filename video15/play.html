@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Matching Game - Playing</title>
+    <link rel="stylesheet" href="../common/css/style.css">
+    <script src="../common/js/game.js" defer></script>
+</head>
+<body>
+    <div id="game_area">
+        <div class="info_bar">
+            <span>Page: <span id="current_page">1</span> / <span id="total_pages">?</span></span>
+            <span>틀린 횟수: <span id="miss_count" style="color: #fa5252;">0</span></span>
+        </div>
+        <div class="game_container">
+            <div class="column" id="kr_col"></div>
+            <div class="column" id="en_col"></div>
+        </div>
+    </div>
+
+    <div id="result_overlay" style="display: none;">
+        <h1>🎉 Game Clear!</h1>
+        <p style="font-size: 20px;">총 틀린 횟수: <span id="total_miss">0</span>번</p>
+        <button class="btn_restart" onclick="location.reload()">다시 시작하기</button>
+    </div>
+
+    <script>
+        window.onload = () => {
+            // URL에서 limit 파라미터 값을 가져옴 (예: ?limit=20)
+            const urlParams = new URLSearchParams(window.location.search);
+            const limit = parseInt(urlParams.get('limit')) || 0;
+
+            // game.js의 initGame 실행
+            if (typeof initGame === "function") {
+                initGame('./data.json', limit);
+            }
+        };
+    </script>
+</body>
+</html>
