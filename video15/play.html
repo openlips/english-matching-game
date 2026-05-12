@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Matching Game - Playing</title>
-    <link rel="stylesheet" href="../common/css/style.css">
-    <script src="../common/js/game.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오픈립스 - Playing</title>
+<link rel="stylesheet" href="../common/css/style.css">
+<script src="../common/js/game.js" defer></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-672HBRNVB6"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-672HBRNVB6');
+</script>
 </head>
 <body>
     <div id="game_area">
@@ -26,16 +35,25 @@
     </div>
 
     <script>
-        window.onload = () => {
-            // URL에서 limit 파라미터 값을 가져옴 (예: ?limit=20)
-            const urlParams = new URLSearchParams(window.location.search);
-            const limit = parseInt(urlParams.get('limit')) || 0;
+window.onload = () => {
+    // 1. URL에서 limit 파라미터 값을 가져옴
+    const urlParams = new URLSearchParams(window.location.search);
+    const limit = parseInt(urlParams.get('limit')) || 0;
 
-            // game.js의 initGame 실행
-            if (typeof initGame === "function") {
-                initGame('./data.json', limit);
-            }
-        };
+    // 2. [추가] 구글 애널리틱스에 클릭 이벤트 전송
+    // 어떤 모드로 게임을 시작했는지 데이터를 보냅니다.
+    if (typeof gtag === 'function') {
+        gtag('event', 'game_start_mode', {
+            'mode_name': limit === 20 ? '20문장 랜덤' : '전체 문장',
+            'video_id': 'video15' // 나중에 video16 등을 만들 때 이 부분만 바꿔주면 구분하기 쉽습니다.
+        });
+    }
+
+    // 3. game.js의 initGame 실행
+    if (typeof initGame === "function") {
+        initGame('./data.json', limit);
+    }
+};
     </script>
 </body>
 </html>
