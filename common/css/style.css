@@ -11,7 +11,7 @@ h1 { font-family: 'GMarketSans'; word-break: keep-all; }
 .video_num { font-size: 14px; color: #4dabf7; font-weight: bold; }
 .game_title { font-size: 18px; font-weight: bold; }
 
-#mode_selection { height: calc(100vh - 35px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 20px 150px; box-sizing: border-box; }
+#mode_selection { height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 25px 20px 150px; box-sizing: border-box; }
 #mode_selection .inner { text-align: center; max-width: 600px; width: 90%; background: #fff; padding: 30px 20px 40px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
 #mode_selection h1 { margin-bottom: 10px; color: #333; line-height: 120%; }
 #mode_selection p { color: #666; margin-bottom: 30px; }
