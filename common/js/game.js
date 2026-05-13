@@ -27,8 +27,8 @@ const items_per_page = 5;
 
 // 모드별 시간 설정
 const GAME_MODES = {
-    easy: 7,
-    hard: 4
+    easy: 6,
+    hard: 3
 };
 
 let current_mode = 'easy';
