@@ -11,15 +11,19 @@ h1 { font-family: 'GMarketSans'; word-break: keep-all; }
 .video_num { font-size: 14px; color: #4dabf7; font-weight: bold; }
 .game_title { font-size: 18px; font-weight: bold; }
 
-#mode_selection { height: calc(100vh - 35px); display: flex; justify-content: center; align-items: center; padding: 0 20px 150px; box-sizing: border-box; }
-#mode_selection .inner { text-align: center; max-width: 600px; width: 90%; background: #fff; padding: 50px 20px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+#mode_selection { height: calc(100vh - 35px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 20px 150px; box-sizing: border-box; }
+#mode_selection .inner { text-align: center; max-width: 600px; width: 90%; background: #fff; padding: 30px 20px 40px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
 #mode_selection h1 { margin-bottom: 10px; color: #333; line-height: 120%; }
 #mode_selection p { color: #666; margin-bottom: 30px; }
 
-.btn_game { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
-.btn_game .btn_mode { width: 50%; max-width: 200px; padding: 20px; cursor: pointer; font-size: 18px; }
-.btn_bot { display: flex; gap: 15px; justify-content: center; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #bbb; }
-.btn_bot a { text-decoration: none; color: #fff; font-size: 15px; background: #333; padding: 10px 20px; border-radius: 8px; font-weight: 700; }
+.mode_group { margin-bottom: 35px; }
+.mode_group:last-child { margin: 0; }
+.btn_game { display: flex; gap: 15px; justify-content: center; margin-top: 15px; }
+.btn_game .btn_mode { width: 50%; max-width: 200px; padding: 10px; cursor: pointer; font-size: 18px; }
+.btn_game .btn_mode.easy { background: #40c057; }
+.btn_game .btn_mode.hard { background: #fa5252; }
+.btn_bot { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
+.btn_bot a { text-decoration: none; color: #333; font-size: 15px; background: #efefef; border: 1px solid #ddd; padding: 10px 20px; border-radius: 8px; font-weight: 700; }
 
 .info_bar { display: flex; gap: 20px; justify-content: space-between; font-weight: bold; background: #fff; padding: 15px 20px; border-radius: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); max-width: 800px; margin: 0 auto 20px; box-sizing: border-box; }
 .info_bar span span { color: #4dabf7; }
@@ -30,17 +34,37 @@ h1 { font-family: 'GMarketSans'; word-break: keep-all; }
 .item { padding: 18px; background: #fff; border: 2px solid #e9ecef; border-radius: 12px; cursor: pointer; text-align: center; transition: all 0.2s ease; font-size: 16px; line-height: 20px; min-height: 40px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); user-select: none; }
 .item:hover { border-color: #dee2e6; background: #f1f3f5; }
 .item.selected { border-color: #4dabf7; background: #e7f5ff; transform: scale(1.02); }
-.item.correct { background-color: #51cf66 !important; color: #fff; border-color: #40c057; visibility: hidden; opacity: 0; transition: 0.4s; }
+/* 1. 정답을 맞힌 직후의 초록색 상태 */
+.item.correct {
+    background-color: #51cf66 !important; /* 초록색 */
+    color: #fff;
+    border-color: #40c057;
+    pointer-events: none; /* 클릭 방지 */
+    transition: background-color 0.8s ease, color 0.8s ease; /* 서서히 변하는 효과 */
+}
+
+/* 2. 잠시 후 추가될 회색 비활성화 상태 */
+.item.correct.is_disabled {
+    background-color: #f1f3f5 !important; /* 연한 회색 */
+    color: #adb5bd;                     /* 흐린 글자색 */
+    border-color: #dee2e6;
+    opacity: 0.8;
+}
 .item.incorrect { background-color: #ff6b6b !important; color: #fff; border-color: #fa5252; }
 
-.bt_back { display: block; line-height: 40px; background: #4dabf7; margin-top: 30px; max-width: 800px; margin: 30px auto ; text-decoration: none; color: #fff; font-weight: 700; border-radius: 10px; }
+.page_indicator { margin-top: 20px; color: #4dabf7; }
+
+.bt_back { text-decoration: none; color: #000; font-weight: 700; border-radius: 10px; padding-left: 20px; background: url(../images/back.png) no-repeat 0 center/15px auto; }
 
 .btn_mode { background-color: #4dabf7; color: white; border: none; border-radius: 10px; font-weight: bold; transition: background 0.2s; }
+.btn_mode span { display: block; }
 .btn_mode:hover { background-color: #339af0; }
 
-#result_overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); color: #fff; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
+.result_overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); color: #fff; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
 .btn_restart { margin-top: 20px; padding: 12px 30px; background: #4dabf7; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; }
 .btn_restart:hover { background-color: #339af0; }
+.btn_list { margin-top: 20px; padding: 12px 30px; background: #ddd; color: #000; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; text-decoration: none; }
+.btn_list:hover { background-color: #ddd; }
 
 .copyright_gap { height: 35px; }
 .copyright { position: fixed; bottom: 0; left: 0; right: 0; background: #ddd; color: #333; text-align: center; font-size: 11px; line-height: 35px; }

@@ -26,21 +26,86 @@
 </script>
 </head>
 <body>
-    <div id="mode_selection">
-        <div class="inner">
-            <h1>오픈립스<br>영어 문장 맞추기 게임</h1>
-            <p>원하시는 학습 모드를 선택해 주세요.</p>
+<div id="mode_selection">
+
+    <div class="inner">
+
+        <h1>
+            오픈립스<br>
+            영어 문장 맞추기 게임
+        </h1>
+
+        <p>
+            원하시는 학습 모드를 선택해 주세요.
+        </p>
+
+        <div class="mode_group">
+
+            <h2>🎯 빠르게 복습하기</h2>
+
             <div class="btn_game">
-                <button class="btn_mode" onclick="location.href='./play.html?limit=20'">20문장 랜덤 모드</button>
-                <button class="btn_mode" onclick="location.href='./play.html?limit=0'">전체 문장 모드</button>
+                <button class="btn_mode easy"
+                    onclick="location.href='./play.html?limit=20&mode=easy'">
+
+                    20문장 Easy
+                    <span>천천히 연습하기</span>
+
+                </button>
+
+                <button class="btn_mode hard"
+                    onclick="location.href='./play.html?limit=20&mode=hard'">
+
+                    20문장 Hard
+                    <span>집중 도전 모드</span>
+
+                </button>
             </div>
-            <div class="btn_bot">
-                <a href="../index.html">🏠 전체 리스트로</a>
-                <a href="https://www.youtube.com/@OpenLips" target="_blank">📺 학습 영상 보기</a>
-            </div>
+
         </div>
+
+        <div class="mode_group">
+
+            <h2>📘 전체 문장 학습</h2>
+
+            <div class="btn_game">
+                <button class="btn_mode easy"
+                    onclick="location.href='./play.html?limit=0&mode=easy'">
+
+                    전체 문장 Easy
+                    <span>부담 없이 반복 학습</span>
+
+                </button>
+
+                <button class="btn_mode hard"
+                    onclick="location.href='./play.html?limit=0&mode=hard'">
+
+                    전체 문장 Hard
+                    <span>끝까지 집중해서 도전</span>
+
+                </button>
+            </div>
+
+        </div>
+
     </div>
-    <div class="copyright_gap"></div>
-    <div class="copyright">Copyright 2026. Open Lips All rights reserved.</div>
+
+    <div class="btn_bot">
+
+        <a href="../index.html">
+            🏠 전체 리스트로
+        </a>
+
+        <a href="https://www.youtube.com/@OpenLips"
+           target="_blank">
+
+            📺 학습 영상 보기
+
+        </a>
+
+    </div>
+
+</div>
+<div class="copyright_gap"></div>
+<div class="copyright">Copyright 2026. Open Lips All rights reserved.</div>
 </body>
 </html>

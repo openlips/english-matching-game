@@ -1,191 +1,430 @@
 /**
  * English Matching Game Framework
  * 제작: Web Publisher (Adaptive AI Version)
- * 기능: 랜덤 추출(20문장/전체) 및 페이징 로직
+ * 기능:
+ * - Easy / Hard 모드 지원
+ * - 전체 게임 타이머
+ * - 성공 / 실패 결과 분기
+ * - 정답 시 시간 보너스
  */
 
 // --- 전역 변수 ---
-let allData = [];           // 결정된 학습 데이터 (20개 혹은 전체)
-let currentPage = 0;        // 현재 페이지
-let missCount = 0;          // 오답 횟수
-let matchCount = 0;         // 현재 페이지 정답 개수
-let selectedKr = null;
-let selectedEn = null;
+let all_data = [];
+let current_page = 0;
+let miss_count = 0;
+let match_count = 0;
 
-const itemsPerPage = 5;     // 페이지당 문장 수 (고정)
-const sndCorrect = new Audio('../common/audio/correct.mp3');
-const sndWrong = new Audio('../common/audio/wrong.mp3');
+let selected_kr = null;
+let selected_en = null;
 
-function playSound(type) {
-    const snd = type === 'correct' ? sndCorrect : sndWrong;
-    snd.pause();           // 재생 중이었다면 멈춤
-    snd.currentTime = 0;   // 시작 위치로 초기화
-    snd.play();            // 재생
+let timer_interval = null;
+let time_left = 0;
+
+let game_over = false;
+
+// 페이지당 문제 수
+const items_per_page = 5;
+
+// 모드별 시간 설정
+const GAME_MODES = {
+    easy: 7,
+    hard: 4
+};
+
+let current_mode = 'easy';
+let time_per_item = GAME_MODES.easy;
+
+// 사운드
+const snd_correct = new Audio('../common/audio/correct.mp3');
+const snd_wrong = new Audio('../common/audio/wrong.mp3');
+
+function play_sound(type) {
+    const snd = type === 'correct'
+        ? snd_correct
+        : snd_wrong;
+
+    snd.pause();
+    snd.currentTime = 0;
+    snd.play();
 }
 
 /**
- * 게임 초기화 함수
- * @param {string} jsonPath - 데이터 JSON 파일 경로
- * @param {number} limit - 추출할 문장 수 (0이면 전체)
+ * 게임 초기화
  */
-async function initGame(jsonPath, limit) {
+async function initGame(json_path, limit, mode = 'easy') {
+
     try {
-        // 1. 변수 초기화
-        allData = [];
-        currentPage = 0;
-        missCount = 0;
+
+        // 초기화
+        all_data = [];
+        current_page = 0;
+        miss_count = 0;
+        match_count = 0;
+
+        selected_kr = null;
+        selected_en = null;
+
+        game_over = false;
+
         document.getElementById('miss_count').textContent = '0';
 
-        // 2. 데이터 가져오기
-        const response = await fetch(jsonPath);
-        if (!response.ok) throw new Error('데이터 로드 실패');
-        
-        const rawData = await response.json();
+        // 모드 설정
+        current_mode = GAME_MODES[mode]
+            ? mode
+            : 'easy';
 
-        // 3. 모드별 데이터 가공 (랜덤 추출 로직)
-        if (limit > 0) {
-            // 데이터를 무작위로 섞은 후 limit 개수만큼만 선택
-            allData = [...rawData].sort(() => Math.random() - 0.5).slice(0, limit);
-        } else {
-            // 전체 데이터 사용
-            allData = rawData;
+        time_per_item = GAME_MODES[current_mode];
+
+        // 데이터 로드
+        const response = await fetch(json_path);
+
+        if (!response.ok) {
+            throw new Error('데이터 로드 실패');
         }
 
-        // 4. 총 페이지 수 UI 반영
-        const totalPages = Math.ceil(allData.length / itemsPerPage);
-        document.getElementById('total_pages').textContent = totalPages;
-        
-        // 5. 첫 페이지 렌더링
-        loadPage(currentPage);
+        const raw_data = await response.json();
+
+        // 랜덤 제한
+        if (limit > 0) {
+
+            all_data = [...raw_data]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, limit);
+
+        } else {
+
+            all_data = raw_data;
+        }
+
+        // 전체 시간 계산
+        time_left = all_data.length * time_per_item;
+
+        update_timer_ui();
+
+        // 타이머 시작
+        start_total_timer();
+
+        // 페이지 수 표시
+        const total_pages =
+            Math.ceil(all_data.length / items_per_page);
+
+        document.getElementById('total_pages')
+            .textContent = total_pages;
+
+        // 첫 페이지 로드
+        loadPage(current_page);
+
     } catch (error) {
-        console.error("Game Init Error:", error);
-        alert("데이터를 가져오는 중 오류가 발생했습니다. (JSON 경로 및 서버 환경을 확인하세요)");
+
+        console.error('Game Init Error:', error);
     }
 }
 
-// --- 페이지 렌더링 ---
-function loadPage(pageIdx) {
-    const krCol = document.getElementById('kr_col');
-    const enCol = document.getElementById('en_col');
-    
-    // 이전 내용 청소
-    krCol.innerHTML = '';
-    enCol.innerHTML = '';
-    matchCount = 0;
-    
-    // 현재 페이지 번호 표시
-    document.getElementById('current_page').textContent = pageIdx + 1;
+/**
+ * 전체 타이머 시작
+ */
+function start_total_timer() {
 
-    // 현재 페이지용 데이터 슬라이싱
-    const pageData = allData.slice(pageIdx * itemsPerPage, (pageIdx + 1) * itemsPerPage);
-    
-    // 좌우 각각 다시 셔플하여 배치
-    const shuffledKr = [...pageData].sort(() => Math.random() - 0.5);
-    const shuffledEn = [...pageData].sort(() => Math.random() - 0.5);
+    if (timer_interval) {
+        clearInterval(timer_interval);
+    }
 
-    shuffledKr.forEach(item => krCol.appendChild(createItem(item.kr, item.en, 'kr')));
-    shuffledEn.forEach(item => enCol.appendChild(createItem(item.en, item.en, 'en')));
+    timer_interval = setInterval(() => {
+
+        if (game_over) {
+            clearInterval(timer_interval);
+            return;
+        }
+
+        time_left--;
+
+        update_timer_ui();
+
+        // 시간 종료
+        if (time_left <= 0) {
+
+            time_left = 0;
+
+            update_timer_ui();
+
+            clearInterval(timer_interval);
+
+            showResult(false);
+        }
+
+    }, 1000);
 }
 
-// --- 아이템 엘리먼트 생성 ---
-function createItem(text, id, type) {
+/**
+ * 타이머 UI 업데이트
+ */
+function update_timer_ui() {
+
+    const timer_el =
+        document.getElementById('timer_sec');
+
+    if (!timer_el) return;
+
+    timer_el.textContent = time_left;
+
+    // 마지막 10초 빨간색
+    timer_el.style.color =
+        time_left <= 10
+            ? '#fa5252'
+            : '#4dabf7';
+}
+
+/**
+ * 결과 표시
+ */
+function showResult(is_success) {
+
+    game_over = true;
+
+    clearInterval(timer_interval);
+
+    if (is_success) {
+
+        const success_overlay =
+            document.getElementById(
+                'result_overlay_success'
+            );
+
+        if (success_overlay) {
+
+            success_overlay.style.display = 'flex';
+
+            document.getElementById('total_miss')
+                .textContent = miss_count;
+        }
+
+    } else {
+
+        const fail_overlay =
+            document.getElementById(
+                'result_overlay_fail'
+            );
+
+        if (fail_overlay) {
+
+            fail_overlay.style.display = 'flex';
+        }
+    }
+}
+
+/**
+ * 페이지 로드
+ */
+function loadPage(page_idx) {
+
+    const kr_col = document.getElementById('kr_col');
+    const en_col = document.getElementById('en_col');
+
+    kr_col.innerHTML = '';
+    en_col.innerHTML = '';
+
+    match_count = 0;
+
+    document.getElementById('current_page')
+        .textContent = page_idx + 1;
+
+    const page_data = all_data.slice(
+        page_idx * items_per_page,
+        (page_idx + 1) * items_per_page
+    );
+
+    const shuffled_kr =
+        [...page_data].sort(() => Math.random() - 0.5);
+
+    const shuffled_en =
+        [...page_data].sort(() => Math.random() - 0.5);
+
+    shuffled_kr.forEach(item => {
+
+        kr_col.appendChild(
+            create_item(item.kr, item.en, 'kr')
+        );
+
+    });
+
+    shuffled_en.forEach(item => {
+
+        en_col.appendChild(
+            create_item(item.en, item.en, 'en')
+        );
+
+    });
+}
+
+/**
+ * 아이템 생성
+ */
+function create_item(text, id, type) {
+
     const div = document.createElement('div');
+
     div.className = 'item';
     div.textContent = text;
     div.dataset.id = id;
-    div.onclick = () => selectItem(div, type);
+
+    div.onclick = () => select_item(div, type);
+
     return div;
 }
 
-// --- 아이템 선택 로직 ---
-function selectItem(el, type) {
-    // 이미 정답/오답 처리 중인 카드는 무시
-    if (el.classList.contains('correct') || el.classList.contains('incorrect')) return;
+/**
+ * 아이템 선택
+ */
+function select_item(el, type) {
+
+    if (game_over) return;
+
+    if (
+        el.classList.contains('correct') ||
+        el.classList.contains('incorrect')
+    ) {
+        return;
+    }
 
     if (type === 'kr') {
-        if (selectedKr) selectedKr.classList.remove('selected');
-        selectedKr = el;
+
+        if (selected_kr) {
+            selected_kr.classList.remove('selected');
+        }
+
+        selected_kr = el;
+
     } else {
-        if (selectedEn) selectedEn.classList.remove('selected');
-        selectedEn = el;
+
+        if (selected_en) {
+            selected_en.classList.remove('selected');
+        }
+
+        selected_en = el;
     }
+
     el.classList.add('selected');
 
-    // 양쪽 다 선택되었을 때만 매칭 확인
-    if (selectedKr && selectedEn) checkMatch();
-}
-
-// --- 정답 확인 ---
-function checkMatch() {
-    const isMatch = selectedKr.dataset.id === selectedEn.dataset.id;
-
-    if (isMatch) {
-        // [추가] 정답 효과음 재생
-        playSound('correct');
-
-        const sKr = selectedKr;
-        const sEn = selectedEn;
-        
-        sKr.classList.add('correct');
-        sEn.classList.add('correct');
-        matchCount++;
-        
-        if (matchCount === pageItemsCount()) {
-            setTimeout(nextPage, 600);
-        }
-        resetSelection();
-    } else {
-        // [추가] 오답 효과음 재생
-        playSound('wrong');
-
-        missCount++;
-        document.getElementById('miss_count').textContent = missCount;
-        
-        selectedKr.classList.add('incorrect');
-        selectedEn.classList.add('incorrect');
-        
-        const sKr = selectedKr;
-        const sEn = selectedEn;
-        
-        setTimeout(() => {
-            sKr.classList.remove('incorrect', 'selected');
-            sEn.classList.remove('incorrect', 'selected');
-        }, 500);
-        resetSelection();
+    if (selected_kr && selected_en) {
+        check_match();
     }
 }
 
 /**
- * 현재 페이지에서 맞춰야 할 아이템 개수 계산
- * (마지막 페이지가 5개 미만일 경우 대응)
+ * 정답 체크
  */
-function pageItemsCount() {
-    const remaining = allData.length - (currentPage * itemsPerPage);
-    return remaining < itemsPerPage ? remaining : itemsPerPage;
-}
+function check_match() {
 
-// --- 페이지 전환 ---
-function nextPage() {
-    currentPage++;
-    if (currentPage * itemsPerPage < allData.length) {
-        loadPage(currentPage);
+    const is_match =
+        selected_kr.dataset.id === selected_en.dataset.id;
+
+    if (is_match) {
+
+        play_sound('correct');
+
+        const s_kr = selected_kr;
+        const s_en = selected_en;
+
+        s_kr.classList.remove('selected');
+        s_en.classList.remove('selected');
+
+        s_kr.classList.add('correct');
+        s_en.classList.add('correct');
+
+        // 정답 보너스 시간
+        time_left += 1;
+
+        update_timer_ui();
+
+        setTimeout(() => {
+
+            s_kr.classList.add('is_disabled');
+            s_en.classList.add('is_disabled');
+
+        }, 500);
+
+        match_count++;
+
+        if (match_count === page_items_count()) {
+
+            setTimeout(nextPage, 1200);
+        }
+
+        reset_selection();
+
     } else {
-        showResult();
+
+        play_sound('wrong');
+
+        miss_count++;
+
+        document.getElementById('miss_count')
+            .textContent = miss_count;
+
+        selected_kr.classList.add('incorrect');
+        selected_en.classList.add('incorrect');
+
+        const s_kr = selected_kr;
+        const s_en = selected_en;
+
+        setTimeout(() => {
+
+            s_kr.classList.remove(
+                'incorrect',
+                'selected'
+            );
+
+            s_en.classList.remove(
+                'incorrect',
+                'selected'
+            );
+
+        }, 500);
+
+        reset_selection();
     }
 }
 
-// --- 결과창 표시 ---
-function showResult() {
-    const overlay = document.getElementById('result_overlay');
-    const totalMiss = document.getElementById('total_miss');
-    if (overlay) {
-        overlay.style.display = 'flex';
-        totalMiss.textContent = missCount;
+/**
+ * 현재 페이지 문제 수
+ */
+function page_items_count() {
+
+    const remaining =
+        all_data.length -
+        (current_page * items_per_page);
+
+    return remaining < items_per_page
+        ? remaining
+        : items_per_page;
+}
+
+/**
+ * 다음 페이지
+ */
+function nextPage() {
+
+    current_page++;
+
+    if (
+        current_page * items_per_page
+        < all_data.length
+    ) {
+
+        loadPage(current_page);
+
+    } else {
+
+        // 전체 성공
+        showResult(true);
     }
 }
 
-// --- 선택 초기화 ---
-function resetSelection() {
-    selectedKr = null;
-    selectedEn = null;
+/**
+ * 선택 초기화
+ */
+function reset_selection() {
+
+    selected_kr = null;
+    selected_en = null;
 }

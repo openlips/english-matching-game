@@ -29,44 +29,51 @@
 <body>
     <div id="game_area">
         <div class="info_bar">
-            <span>PAGE <span><span id="current_page">1</span> / <span id="total_pages">?</span></span></span>
+            <a href="index.html" class="bt_back">뒤로가기</a>
+            <div class="timer_bar">TIME <span><span id="timer_sec">0</span>s</span></div>
             <span>틀린 횟수 <span id="miss_count" style="color: #fa5252;">0</span></span>
         </div>
         <div class="game_container">
             <div class="column" id="kr_col"></div>
             <div class="column" id="en_col"></div>
         </div>
-        <a href="index.html" class="bt_back">뒤로가기</a>
+        <div class="page_indicator">
+            <span id="current_page">1</span> / <span id="total_pages">?</span>
+        </div>
     </div>
 
-    <div id="result_overlay" style="display: none;">
+    <div class="result_overlay" id="result_overlay_success" style="display: none;">
         <h1>🎉 Game Clear!</h1>
         <p style="font-size: 20px;">총 틀린 횟수: <span id="total_miss">0</span>번</p>
         <button class="btn_restart" onclick="location.reload()">다시 시작하기</button>
+        <a href="index.html" class="btn_list">리스트로 가기</a>
+    </div>
+
+    <div class="result_overlay" id="result_overlay_fail" style="display: none;">
+        <h1>Game fail 😭</h1>
+        <button class="btn_restart" onclick="location.reload()">다시 시작하기</button>
+        <a href="index.html" class="btn_list">리스트로 가기</a>
     </div>
     <div class="copyright_gap"></div>
     <div class="copyright">Copyright 2026. Open Lips All rights reserved.</div>
 
-    <script>
+<script>
 window.onload = () => {
-    // 1. URL에서 limit 파라미터 값을 가져옴
-    const urlParams = new URLSearchParams(window.location.search);
-    const limit = parseInt(urlParams.get('limit')) || 0;
 
-    // 2. [추가] 구글 애널리틱스에 클릭 이벤트 전송
-    // 어떤 모드로 게임을 시작했는지 데이터를 보냅니다.
-    if (typeof gtag === 'function') {
-        gtag('event', 'game_start_mode', {
-            'mode_name': limit === 20 ? '20문장 랜덤' : '전체 문장',
-            'video_id': 'video15' // 나중에 video16 등을 만들 때 이 부분만 바꿔주면 구분하기 쉽습니다.
-        });
-    }
+    const urlParams =
+        new URLSearchParams(window.location.search);
 
-    // 3. game.js의 initGame 실행
+    const limit =
+        parseInt(urlParams.get('limit')) || 0;
+
+    const mode =
+        urlParams.get('mode') || 'easy';
+
     if (typeof initGame === "function") {
-        initGame('./data.json', limit);
+
+        initGame('./data.json', limit, mode);
     }
 };
-    </script>
+</script>
 </body>
 </html>
