@@ -55,7 +55,7 @@ h1 { font-family: 'GMarketSans'; word-break: keep-all; }
 
 .page_indicator { margin-top: 20px; color: #4dabf7; }
 
-.bt_back { text-decoration: none; color: #000; font-weight: 700; border-radius: 10px; padding-left: 20px; background: url(../images/back.png) no-repeat 0 center/15px auto; }
+.bt_back { text-decoration: none; color: #000; font-weight: 700; border-radius: 10px; padding-left: 16px; background: url(../images/back.png) no-repeat 0 center/14px auto; }
 
 .btn_mode { background-color: #4dabf7; color: white; border: none; border-radius: 10px; font-weight: bold; transition: background 0.2s; }
 .btn_mode:hover { background-color: #339af0; }
