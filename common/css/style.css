@@ -41,7 +41,28 @@ h1 { font-family: 'GMarketSans'; word-break: keep-all; }
     color: #fff;
     border-color: #40c057;
     pointer-events: none; /* 클릭 방지 */
-    transition: background-color 0.8s ease, color 0.8s ease; /* 서서히 변하는 효과 */
+    transition: background-color 0.5s ease;
+    
+    /* 0.5초 동안 'bounce' 애니메이션 실행 */
+    animation: jump 0.5s ease; 
+}
+/* 위로 튀어오르는 효과 정의 */
+@keyframes jump {
+    0% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-10px); /* 위로 10px 이동 */
+    }
+    50% {
+        transform: translateY(2px);   /* 제자리보다 살짝 아래로 (반동) */
+    }
+    70% {
+        transform: translateY(-2px);  /* 아주 살짝 다시 위로 */
+    }
+    100% {
+        transform: translateY(0);    /* 최종 제자리 */
+    }
 }
 
 /* 2. 잠시 후 추가될 회색 비활성화 상태 */
