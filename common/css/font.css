@@ -1,6 +1,12 @@
 @import url('../font/pretendard.css');/*font-family: 'Pretendard';*/
 @import url('../font/montserrat.css');/*font-family: 'Montserrat';*/
 @font-face {
+    font-family: 'GangwonEducationTteontteon';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+@font-face {
     font-family: 'YeogiOttaeJalnan';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff') format('woff');
     font-weight: normal;

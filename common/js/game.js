@@ -37,7 +37,7 @@ let current_mode = 'easy';
 let time_per_item = GAME_MODES.easy;
 
 // 사운드
-const snd_correct = new Audio('../common/audio/correct.mp3');
+const snd_correct = new Audio('../common/audio/correct2.mp3');
 const snd_wrong = new Audio('../common/audio/wrong.mp3');
 
 function play_sound(type) {
