@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://openlips.github.io/english-matching-game/">
+<meta property="og:title" content="오픈립스 영어 문장 맞추기 게임">
+<meta property="og:description" content="유튜브 영상으로 배운 문장을 게임으로 복습해보세요! 20문장 랜덤 모드 지원.">
+<meta property="og:image" content="./common/images/og_image.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="오픈립스 영어 문장 맞추기 게임">
+<meta name="twitter:description" content="게임으로 즐겁게 배우는 영어 문장! 지금 바로 도전해보세요.">
+<meta name="twitter:image" content="./common/images/og_image.png">
+<title>오픈립스 - Playing</title>
+<link rel="stylesheet" href="../common/css/style.css">
+<script src="../common/js/game.js" defer></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-672HBRNVB6"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-672HBRNVB6');
+</script>
+</head>
+<body>
+    <div id="game_area">
+        <div class="info_bar">
+            <a href="index.html" class="bt_back">뒤로가기</a>
+            <div class="timer_bar">TIME <span><span id="timer_sec">0</span>s</span></div>
+            <span>틀린 횟수 <span id="miss_count" style="color: #fa5252;">0</span></span>
+        </div>
+        <div class="game_container">
+            <div class="column" id="kr_col"></div>
+            <div class="column" id="en_col"></div>
+        </div>
+        <div class="page_indicator">
+            <span id="current_page">1</span> / <span id="total_pages">?</span>
+        </div>
+    </div>
+
+    <div class="result_overlay" id="result_overlay_success" style="display: none;">
+        <h1>🎉 Game Clear!</h1>
+        <p style="font-size: 20px;">총 틀린 횟수: <span id="total_miss">0</span>번</p>
+        <button class="btn_restart" onclick="location.reload()">다시 시작하기</button>
+        <a href="index.html" class="btn_list">리스트로 가기</a>
+    </div>
+
+    <div class="result_overlay" id="result_overlay_fail" style="display: none;">
+        <h1>Game fail 😭</h1>
+        <button class="btn_restart" onclick="location.reload()">다시 시작하기</button>
+        <a href="index.html" class="btn_list">리스트로 가기</a>
+    </div>
+    <div class="copyright_gap"></div>
+    <div class="copyright">Copyright 2026. Open Lips All rights reserved.</div>
+
+<script>
+window.onload = () => {
+
+    const urlParams =
+        new URLSearchParams(window.location.search);
+
+    const limit =
+        parseInt(urlParams.get('limit')) || 0;
+
+    const mode =
+        urlParams.get('mode') || 'easy';
+
+    if (typeof initGame === "function") {
+
+        initGame('./data.json', limit, mode);
+    }
+};
+</script>
+</body>
+</html>
