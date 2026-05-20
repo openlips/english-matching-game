@@ -16,7 +16,7 @@ textarea
     --green: #45b035;
     --red: #e71e0f;
 }
-#wrap { min-width: 1400px; padding: 0 50px; }
+#wrap { min-width: 1500px; }
 .wrap { width: 1280px; margin: 0 auto; }        
 .mt_banner { background: #040804 url(../images/mt_bg.png) center center/cover; padding: 90px 0 340px; }
 .mt_banner .wrap h2 { font-size: 60px; color: #fff; font-weight: 700; margin-bottom: 55px; }
